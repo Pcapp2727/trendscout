@@ -2,7 +2,7 @@ import os, datetime, requests
 from celery_app import app
 from data_ingestion import DataIngestion
 from trend_clustering import TrendClustering
-from qdrant_client import get_qdrant_client
+from qdrant_utils import get_qdrant_client
 
 EXPLODE_KEY = os.getenv('EXPLODING_TOPICS_API_KEY')
 REDDIT_CONFIG={'client_id':os.getenv('REDDIT_CLIENT_ID'),'client_secret':os.getenv('REDDIT_CLIENT_SECRET'),'user_agent':os.getenv('REDDIT_USER_AGENT')}
