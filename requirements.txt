@@ -1,0 +1,9 @@
+streamlit
+qdrant-client
+python-pptx
+openai
+pytrends
+praw
+beautifulsoup4
+celery
+redis
