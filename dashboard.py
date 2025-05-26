@@ -4,15 +4,16 @@ from pptx import Presentation
 import openai
 
 openai.api_key=os.getenv('OPENAI_API_KEY')
-- client,COL = get_qdrant_client(
--     host=os.getenv('QDRANT_URL'),
--     port=int(os.getenv('QDRANT_PORT', 6333)),
--     api_key=os.getenv('QDRANT_API_KEY')
+import os
+from qdrant_utils import get_qdrant_client
+
+# Initialize Qdrant client using host + port from secrets
 client, COLLECTION = get_qdrant_client(
-    host=os.getenv('QDRANT_HOST', 'localhost'),
-    port=int(os.getenv('QDRANT_PORT', '6333')),
-    api_key=os.getenv('QDRANT_API_KEY'),
+    host=os.getenv("QDRANT_HOST", "localhost"),
+    port=int(os.getenv("QDRANT_PORT", "6333")),
+    api_key=os.getenv("QDRANT_API_KEY"),
 )
+
 
 
 
