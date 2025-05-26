@@ -1,5 +1,5 @@
 import os,tempfile,streamlit as st
-from qdrant_client import get_qdrant_client
+from qdrant_utils import get_qdrant_client
 from pptx import Presentation
 import openai
 
