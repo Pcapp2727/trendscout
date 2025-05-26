@@ -39,6 +39,9 @@ except Exception as e:
 
 # --- Helper to fetch top K niches from Qdrant ---
 def fetch_top_niches(k: int = 10):
+    """
+    Fetch top k niches from Qdrant, handling both dict- and object-based scroll results.
+    """
     results = client.scroll(
         collection_name=COLLECTION,
         with_payload=True,
@@ -46,19 +49,27 @@ def fetch_top_niches(k: int = 10):
     )
     items = []
     for pt in results:
-        payload = pt.payload or {}
+        # Support both dict and object styles
+        if isinstance(pt, dict):
+            payload = pt.get("payload") or {}
+        else:
+            payload = getattr(pt, "payload", {}) or {}
+
         term = payload.get("term")
         momentum = payload.get("momentum")
         cluster = payload.get("cluster")
+
         if term is not None and momentum is not None:
             items.append({
                 "term": term,
                 "momentum": momentum,
                 "cluster": cluster
             })
-    # sort by descending momentum
+
+    # Sort descending by momentum
     items.sort(key=lambda x: x["momentum"], reverse=True)
     return items[:k]
+
 
 # --- Helper to generate one slide per term ---
 def generate_plan_slide(prs: Presentation, term: str):
