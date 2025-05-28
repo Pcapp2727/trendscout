@@ -24,6 +24,17 @@ try:
             url=qdrant_url,
             api_key=os.getenv("QDRANT_API_KEY")
         )
+        # Right after your client, COLLECTION = get_qdrant_client(…)
+try:
+    stats = client.count(collection_name=COLLECTION)
+    total = stats.count
+except Exception:
+    total = 0
+
+st.sidebar.markdown(f"**Qdrant points:** {total}")
+if total == 0:
+    st.sidebar.warning("No trends indexed yet. Run the ingestion & pipeline tasks.")
+
     else:
         client, COLLECTION = get_qdrant_client(
             host=os.getenv("QDRANT_HOST", "localhost"),
