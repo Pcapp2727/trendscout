@@ -1,0 +1,41 @@
+name: TrendScout Scheduler
+
+on:
+  schedule:
+    - cron: '0 * * * *'      # every hour → ingest social
+    - cron: '15 0,12 * * *'  # twice daily → ingest search
+    - cron: '30 2 * * *'     # nightly at 02:30 → full cluster
+  workflow_dispatch:         # manual trigger
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Ingest social terms
+        if: github.event_name == 'schedule' && startsWith(github.event.schedule, '0 *')
+        run: python ingest.py
+
+      - name: Ingest search terms
+        if: github.event_name == 'schedule' && startsWith(github.event.schedule, '15 0,12')
+        run: python ingest.py
+
+      - name: Full clustering pipeline
+        if: github.event_name == 'schedule' && github.event.schedule == '30 2 * * *'
+        run: python cluster.py
+
+      - name: Manual full run
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python ingest.py
+          python cluster.py
